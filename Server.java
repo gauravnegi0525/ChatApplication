@@ -31,19 +31,54 @@ class Server
         }
         
     }
-
+    
     public void startReading()
     {
-        Runnable r1 = () ->{
-
-        };
+        try
+        {
+            Runnable r1 = () ->{
+                System.out.println("Reader start......");
+                while(true)
+                {
+                    String msg = br.readLine();
+                    if(msg.equals("exit"))
+                    {
+                        System.out.println("Clint has stopped");
+                        break;
+                    }
+                    System.out.println("Clint: "+msg);
+                }
+            };
+        }catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+       
     }
+    
 
     public void startWriting()
-    {
-        Runnable r2 = () ->{
-
-        };
+    {   
+        try
+        {
+            Runnable r2 = () ->{
+                System.out.println("Writer start......");
+                while(true)
+                {
+                    String input = out.readLine();
+                    if(input.equals("terminate"))
+                    {
+                        System.out.println("You Stops the messaging.");
+                        break;
+                    }
+                    socket.getOutputStream(input);
+                }
+            };
+        }catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        
     }
     public static void main(String[] args) 
     {
