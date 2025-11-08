@@ -4,17 +4,14 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class Server 
-{
+class Server {
     ServerSocket server;
     Socket socket;
     BufferedReader br;
     PrintWriter out;
 
-    public Server()
-    {
-        try
-        {
+    public Server() {
+        try {
             server = new ServerSocket(7777);
             System.out.println("Server is ready to set the connection.");
             System.out.println("waiting...........");
@@ -24,64 +21,53 @@ class Server
 
             startReading();
             startWriting();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        
-    }
-    
-    public void startReading()
-    {
-        try
-        {
-            Runnable r1 = () ->{
-                System.out.println("Reader start......");
-                while(true)
-                {
-                    String msg = br.readLine();
-                    if(msg.equals("exit"))
-                    {
-                        System.out.println("Clint has stopped");
-                        break;
-                    }
-                    System.out.println("Clint: "+msg);
-                }
-            };
-        }catch(Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-       
-    }
-    
 
-    public void startWriting()
-    {   
-        try
-        {
-            Runnable r2 = () ->{
-                System.out.println("Writer start......");
-                while(true)
-                {
-                    String input = out.readLine();
-                    if(input.equals("terminate"))
-                    {
-                        System.out.println("You Stops the messaging.");
+    }
+
+    public void startReading() {
+        Runnable r1 = () -> {
+            System.out.println("Reader start......");
+            try {
+                while (true) {
+                    String msg = br.readLine();
+                    if (msg.equals("exit")) {
+                        System.out.println("Clint has terminated the chat!");
                         break;
                     }
-                    socket.getOutputStream(input);
+                    System.out.println("Clint: " + msg);
                 }
-            };
-        }catch(Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
-        
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
+
+        };
+        new Thread(r1).start();
     }
-    public static void main(String[] args) 
-    {
+
+    public void startWriting() {
+        Runnable r2 = () -> {
+            while (true) {
+                try {
+                    BufferedReader br1 = new BufferedReader(new InputStreamReader(System.in));
+
+                    String content = br1.readLine();
+                    out.println(content);
+                    out.flush();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(r2).start();
+
+    }
+
+    public static void main(String[] args) {
         System.out.println("This is Server running.....");
     }
 }
