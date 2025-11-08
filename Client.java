@@ -1,30 +1,28 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
-class Server {
-    ServerSocket server;
+public class Client {
     Socket socket;
     BufferedReader br;
     PrintWriter out;
 
-    public Server() {
+    public Client() {
         try {
-            server = new ServerSocket(7777);
-            System.out.println("Server is ready to set the connection.");
-            System.out.println("waiting...........");
-            socket = server.accept();
+            System.out.println("Sending request to server");
+            socket = new Socket("192.0.0.1", 7777);
+            System.out.println("Connection DOne");
+
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream());
 
             startReading();
             startWriting();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
 
+        } catch (Exception e) {
+
+        }
     }
 
     public void startReading() {
@@ -34,10 +32,10 @@ class Server {
                 while (true) {
                     String msg = br.readLine();
                     if (msg.equals("exit")) {
-                        System.out.println("Clint has terminated the chat!");
+                        System.out.println("Server has terminated the chat!");
                         break;
                     }
-                    System.out.println("Clint: " + msg);
+                    System.out.println("Server: " + msg);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -68,7 +66,7 @@ class Server {
     }
 
     public static void main(String[] args) {
-        System.out.println("This is Server running.....");
-        new Server();
+        System.out.println("This is client side");
+        new Client();
     }
 }
